@@ -4,7 +4,7 @@ import userRoute from "./src/routes/user.route.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-const port = 3000;
+const port = process.env.POST || 3000;
 const app = express();
 
 connectDatabase();
