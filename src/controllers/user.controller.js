@@ -1,20 +1,84 @@
-const create = (req, res) => {
-  const { name, username, email, password, avatar, background } = req.body;
+import userService from "../services/user.service.js";
 
-  if (!name || !username || !email || !password || !avatar || !background) {
-    res.status(400).send({ message: "Submit all fields for registration" });
-  }
+const userController = {
+  create: async (req, res) => {
+    try {
+      const { name, username, email, password, avatar, background } = req.body;
 
-  res.status(201).send({
-    message: "User created successfully",
-    user: {
-      name,
-      username,
-      email,
-      avatar,
-      background,
-    },
-  });
+      if (!name || !username || !email || !password || !avatar || !background) {
+        res.status(400).send({ message: "Submit all fields for registration" });
+      }
+
+      const user = await userService.createService(req.body);
+
+      if (!user) {
+        return res.status(400).send({ message: "Error creating user" });
+      }
+
+      res.status(201).send({
+        message: "User created successfully",
+        user: {
+          id: user._id,
+          name,
+          username,
+          email,
+          avatar,
+          background,
+        },
+      });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  findAll: async (req, res) => {
+    try {
+      const users = await userService.findAllService();
+
+      if (users.length === 0) {
+        return res
+          .status(400)
+          .send({ message: "There are no registered users" });
+      }
+
+      res.status(200).send({ users });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  findById: async (req, res) => {
+    try {
+      const user = req.user;
+      res.status(200).send({ user });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  update: async (req, res) => {
+    try {
+      const { name, username, email, password, avatar, background } = req.body;
+
+      if (!name && !username && !email && !password && !avatar && !background)
+        res
+          .status(400)
+          .send({ message: "Submit at least one field for update" });
+
+      const { id, user } = req;
+
+      await userService.updateService(
+        id,
+        name,
+        username,
+        email,
+        password,
+        avatar,
+        background
+      );
+
+      res.send({ message: "User updated successfully" });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
 };
 
-module.exports = { create };
+export default userController;

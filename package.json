@@ -7,11 +7,14 @@
     "start": "node index",
     "dev": "nodemon index"
   },
+  "type": "module",
   "keywords": [],
   "author": "Devwk",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
+    "mongoose": "^8.1.0",
     "nodemon": "^3.0.3"
   }
 }
