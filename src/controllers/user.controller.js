@@ -1,4 +1,4 @@
-import userService from "../services/user.service.js";
+import { UserService } from "../services/user.service.js";
 
 const userController = {
   create: async (req, res) => {
@@ -9,7 +9,7 @@ const userController = {
         res.status(400).send({ message: "Submit all fields for registration" });
       }
 
-      const user = await userService.createService(req.body);
+      const user = await UserService.createService(req.body);
 
       if (!user) {
         return res.status(400).send({ message: "Error creating user" });
@@ -32,7 +32,7 @@ const userController = {
   },
   findAll: async (req, res) => {
     try {
-      const users = await userService.findAllService();
+      const users = await UserService.findAllService();
 
       if (users.length === 0) {
         return res
@@ -64,7 +64,7 @@ const userController = {
 
       const { id, user } = req;
 
-      await userService.updateService(
+      await UserService.updateService(
         id,
         name,
         username,

@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 
-const userService = {
+export const UserService = {
   createService: (body) => User.create(body),
   findAllService: () => User.find(),
   findByIdService: (id) => User.findById(id),
@@ -17,5 +17,3 @@ const userService = {
       }
     ),
 };
-
-export default userService;
