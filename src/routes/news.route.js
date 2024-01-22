@@ -1,8 +1,9 @@
 import { Router } from "express";
 import newsController from "../controllers/news.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 const newsRoute = Router();
 
-newsRoute.post("/", newsController.create);
+newsRoute.post("/", authMiddleware, newsController.create);
 newsRoute.get("/", newsController.getAll);
 
 export default newsRoute;
