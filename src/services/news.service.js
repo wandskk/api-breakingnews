@@ -22,7 +22,7 @@ export const NewsService = {
       { title, text, banner },
       { rawResult: true }
     ),
-  eraseNewsService: async (id) => News.findOneAndDelete({ _id: id }),
+  deleteNewsService: async (id) => News.findOneAndDelete({ _id: id }),
   likeNewsService: async (idNews, userId) =>
     News.findOneAndUpdate(
       { _id: idNews, "likes.userId": { $nin: [userId] } },
@@ -30,4 +30,20 @@ export const NewsService = {
     ),
   deleteLikeNewsService: async (idNews, userId) =>
     News.findOneAndUpdate({ _id: idNews }, { $pull: { likes: { userId } } }),
+  addCommentNewsService: async (idNews, comment, userId) => {
+    const idComment = Math.floor(Date.now() * Math.random()).toString(36);
+    return News.findOneAndUpdate(
+      { _id: idNews },
+      {
+        $push: {
+          comments: { idComment, userId, comment, createdAt: new Date() },
+        },
+      }
+    );
+  },
+  deleteCommentNewsService: async (idNews, idComment, userId) =>
+    News.findOneAndUpdate(
+      { _id: idNews },
+      { $pull: { comments: { idComment, userId } } }
+    ),
 };

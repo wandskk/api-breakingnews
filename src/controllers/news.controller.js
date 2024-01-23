@@ -180,7 +180,7 @@ const newsController = {
       if (!title && !text && !banner) {
         return res
           .status(400)
-          .send({ message: "Submit at leat one field to update the news" });
+          .send({ message: "Submit at least one field to update the news" });
       }
 
       const news = await NewsService.findByIdNewsService(id);
@@ -196,7 +196,7 @@ const newsController = {
       res.status(500).send({ message: error.message });
     }
   },
-  eraseNews: async (req, res) => {
+  deleteNews: async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -212,7 +212,7 @@ const newsController = {
         return res.status(401).send({ message: "You didn't delete this news" });
       }
 
-      await NewsService.eraseNewsService(id);
+      await NewsService.deleteNewsService(id);
 
       res.send({ message: "News deleted successfully" });
     } catch (error) {
@@ -225,7 +225,6 @@ const newsController = {
       const userId = req.userId;
 
       const newsLiked = await NewsService.likeNewsService(id, userId);
-      console.log(newsLiked);
 
       if (!newsLiked) {
         await NewsService.deleteLikeNewsService(id, userId);
@@ -233,6 +232,55 @@ const newsController = {
       }
 
       res.send({ message: "Like done successfully" });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  addCommentNews: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { userId } = req;
+      const { comment } = req.body;
+
+      if (!comment) {
+        return res
+          .status(400)
+          .send({ message: "Submit at least one comment the news" });
+      }
+
+      await NewsService.addCommentNewsService(id, comment, userId);
+
+      return res.send({ message: "Comment added successfully" });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  deleteCommentNews: async (req, res) => {
+    try {
+      const { idNews, idComment } = req.params;
+      const { userId } = req;
+
+      const commentDeleted = await NewsService.deleteCommentNewsService(
+        idNews,
+        idComment,
+        userId
+      );
+
+      const commentFinder = commentDeleted.comments.find(
+        (comment) => comment.userId.toString() === userId.toString()
+      );
+
+      if (!commentFinder) {
+        return res.status(404).send({ message: "Comment not found" });
+      }
+
+      if (commentFinder.userId.toString() !== userId.toString()) {
+        return res
+          .status(401)
+          .send({ message: "You can't delete this comment" });
+      }
+
+      return res.send({ message: "Comment deleted successfully" });
     } catch (error) {
       res.status(500).send({ message: error.message });
     }

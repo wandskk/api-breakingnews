@@ -10,7 +10,13 @@ newsRouter.get("/search", newsController.searchByTitleNews);
 newsRouter.get("/byUser", authMiddleware, newsController.byUserNews);
 newsRouter.get("/:id", authMiddleware, newsController.findByIdNews);
 newsRouter.patch("/:id", authMiddleware, newsController.updateNews);
-newsRouter.delete("/:id", authMiddleware, newsController.eraseNews);
+newsRouter.delete("/:id", authMiddleware, newsController.deleteNews);
 newsRouter.patch("/like/:id", authMiddleware, newsController.likeNews);
+newsRouter.patch("/comment/:id", authMiddleware, newsController.addCommentNews);
+newsRouter.patch(
+  "/comment/:idNews/:idComment",
+  authMiddleware,
+  newsController.deleteCommentNews
+);
 
 export default newsRouter;
