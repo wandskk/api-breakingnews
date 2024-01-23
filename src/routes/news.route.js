@@ -5,5 +5,7 @@ const newsRoute = Router();
 
 newsRoute.post("/", authMiddleware, newsController.create);
 newsRoute.get("/", newsController.findAll);
+newsRoute.get("/top", newsController.topNews);
+newsRoute.get("/:id", newsController.findById);
 
 export default newsRoute;

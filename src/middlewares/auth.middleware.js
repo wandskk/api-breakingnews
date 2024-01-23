@@ -11,21 +11,21 @@ export const authMiddleware = async (req, res, next) => {
     const [schema, token] = parts;
 
     if (!authorization || parts.length !== 2 || schema !== "Bearer")
-      return res.sendStatus(401);
+      return res.status(401);
 
     jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
-      if (error) return res.sendStatus(401).send({ message: "Token is not valid" });
+      if (error) return res.status(401).send({ message: "Token is not valid" });
 
       const user = await UserService.findByIdService(decoded.id);
 
       if (!user || !user._id)
-        return res.sendStatus(401).send({ message: "Token is not valid" });
+        return res.status(401).send({ message: "Token is not valid" });
 
       req.userId = user._id;
 
       return next();
     });
   } catch (error) {
-    res.sendStatus(500).send({ message: error.message });
+    res.status(500).send({ message: error.message });
   }
 };

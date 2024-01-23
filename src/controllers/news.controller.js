@@ -6,7 +6,7 @@ const newsController = {
       const { title, text, banner } = req.body;
 
       if (!title || !text || !banner)
-        res.sendStatus(400).send({ message: "All fields are required" });
+        res.status(400).send({ message: "All fields are required" });
 
       await NewsService.createService({
         title,
@@ -15,9 +15,9 @@ const newsController = {
         user: req.userId,
       });
 
-      res.sendStatus(201);
+      res.status(201);
     } catch (error) {
-      res.sendStatus(500).send({ message: error.message });
+      res.status(500).send({ message: error.message });
     }
   },
   findAll: async (req, res) => {
@@ -42,7 +42,7 @@ const newsController = {
           : null;
 
       if (news.length === 0)
-        return res.sendStatus(400).send({ message: "There are no news" });
+        return res.status(400).send({ message: "There are no news" });
 
       res.send({
         nextUrl,
@@ -55,7 +55,7 @@ const newsController = {
           title: item.title,
           text: item.text,
           banner: item.banner,
-          likes: item.lkes,
+          likes: item.likes,
           comments: item.comments,
           user: {
             name: item.user.name,
@@ -65,8 +65,58 @@ const newsController = {
         })),
       });
     } catch (error) {
-      res.sendStatus(500).send({ message: error.message });
+      res.status(500).send({ message: error.message });
     }
+  },
+  topNews: async (req, res) => {
+    try {
+      const news = await NewsService.topNewsService();
+
+      if (!news) {
+        return res.status(400).send({ message: "There are no news" });
+      }
+
+      res.send({
+        news: {
+          id: news._id,
+          title: news.title,
+          text: news.text,
+          banner: news.banner,
+          likes: news.likes,
+          comments: news.comments,
+          user: {
+            name: news.user.name,
+            username: news.user.username,
+            avatar: news.user.avatar,
+          },
+        },
+      });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  findById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const news = await NewsService.findByIdService(id);
+      console.log(news);
+
+      res.send({
+        news: {
+          id: news._id,
+          title: news.title,
+          text: news.text,
+          banner: news.banner,
+          likes: news.likes,
+          comments: news.comments,
+          user: {
+            name: news.user.name,
+            username: news.user.username,
+            avatar: news.user.avatar,
+          },
+        },
+      });
+    } catch (error) {}
   },
 };
 

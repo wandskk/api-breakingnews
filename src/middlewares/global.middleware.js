@@ -6,11 +6,11 @@ const validId = async (req, res, next) => {
     const id = req.params.id;
 
     if (!mongoose.Types.ObjectId.isValid(id))
-      return res.sendStatus(400).send({ message: "Invalid ID" });
+      return res.status(400).send({ message: "Invalid ID" });
 
     next();
   } catch (error) {
-    res.sendStatus(500).send({ message: error.message });
+    res.status(500).send({ message: error.message });
   }
 };
 
@@ -20,14 +20,14 @@ const validUser = async (req, res, next) => {
 
     const user = await UserService.findByIdService(id);
 
-    if (!user) return res.sendStatus(400).send({ message: "User not found" });
+    if (!user) return res.status(400).send({ message: "User not found" });
 
     req.id = id;
     req.user = user;
 
     next();
   } catch (error) {
-    res.sendStatus(500).send({ message: error.message });
+    res.status(500).send({ message: error.message });
   }
 };
 
