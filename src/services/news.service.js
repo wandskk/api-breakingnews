@@ -21,4 +21,5 @@ export const NewsService = {
       { title, text, banner },
       { rawResult: true }
     ),
+  eraseService: async (id) => News.findOneAndDelete({ _id: id }),  
 };

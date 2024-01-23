@@ -180,18 +180,42 @@ const newsController = {
       if (!title && !text && !banner) {
         return res
           .status(400)
-          .send({ message: "Submit at leat one field to update the post" });
+          .send({ message: "Submit at leat one field to update the news" });
       }
 
-      const news = await NewsService.findByIdService(id);      
+      const news = await NewsService.findByIdService(id);
 
       if (news.user._id.toString() !== req.userId.toString()) {
-        return res.status(401).send({ message: "You didn't update this post" });
+        return res.status(401).send({ message: "You didn't update this news" });
       }
 
       await NewsService.updateService(id, title, text, banner);
 
-      return res.send({ message: "Post updated successfully" });
+      return res.send({ message: "News updated successfully" });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  erase: async (req, res) => {
+    console.log("caiu aqui")
+    try {
+      const { id } = req.params;
+
+      const news = await NewsService.findByIdService(id);
+
+      if (!news) {
+        return res
+          .status(400)
+          .send({ message: "There are no news with this id" });
+      }
+
+      if (news.user._id.toString() !== req.userId.toString()) {
+        return res.status(401).send({ message: "You didn't delete this news" });
+      }
+
+      await NewsService.eraseService(id);
+
+      res.send({ message: "News deleted successfully" });
     } catch (error) {
       res.status(500).send({ message: error.message });
     }

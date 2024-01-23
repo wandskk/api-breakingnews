@@ -1,14 +1,15 @@
 import { Router } from "express";
 import newsController from "../controllers/news.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-const newsRoute = Router();
+const newsRouter = Router();
 
-newsRoute.post("/", authMiddleware, newsController.create);
-newsRoute.get("/", newsController.findAll);
-newsRoute.get("/top", newsController.topNews);
-newsRoute.get("/search", newsController.searchByTitle);
-newsRoute.get("/byUser", authMiddleware, newsController.byUser);
-newsRoute.get("/:id", authMiddleware, newsController.findById);
-newsRoute.patch("/:id", authMiddleware, newsController.update);
+newsRouter.post("/", authMiddleware, newsController.create);
+newsRouter.get("/", newsController.findAll);
+newsRouter.get("/top", newsController.topNews);
+newsRouter.get("/search", newsController.searchByTitle);
+newsRouter.get("/byUser", authMiddleware, newsController.byUser);
+newsRouter.get("/:id", authMiddleware, newsController.findById);
+newsRouter.patch("/:id", authMiddleware, newsController.update);
+newsRouter.delete("/:id", authMiddleware, newsController.erase);
 
-export default newsRoute;
+export default newsRouter;
