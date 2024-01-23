@@ -9,5 +9,6 @@ newsRoute.get("/top", newsController.topNews);
 newsRoute.get("/search", newsController.searchByTitle);
 newsRoute.get("/byUser", authMiddleware, newsController.byUser);
 newsRoute.get("/:id", authMiddleware, newsController.findById);
+newsRoute.patch("/:id", authMiddleware, newsController.update);
 
 export default newsRoute;

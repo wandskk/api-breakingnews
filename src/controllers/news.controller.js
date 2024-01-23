@@ -1,4 +1,5 @@
 import { NewsService } from "../services/news.service.js";
+import { ObjectId } from "mongoose";
 
 const newsController = {
   create: async (req, res) => {
@@ -150,7 +151,7 @@ const newsController = {
   byUser: async (req, res) => {
     try {
       const id = req.userId;
-      const news = await NewsService.byUserService(id);      
+      const news = await NewsService.byUserService(id);
 
       return res.send({
         results: news.map((item) => ({
@@ -167,6 +168,30 @@ const newsController = {
           },
         })),
       });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  update: async (req, res) => {
+    try {
+      const { title, text, banner } = req.body;
+      const { id } = req.params;
+
+      if (!title && !text && !banner) {
+        return res
+          .status(400)
+          .send({ message: "Submit at leat one field to update the post" });
+      }
+
+      const news = await NewsService.findByIdService(id);      
+
+      if (news.user._id.toString() !== req.userId.toString()) {
+        return res.status(401).send({ message: "You didn't update this post" });
+      }
+
+      await NewsService.updateService(id, title, text, banner);
+
+      return res.send({ message: "Post updated successfully" });
     } catch (error) {
       res.status(500).send({ message: error.message });
     }

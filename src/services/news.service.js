@@ -15,4 +15,10 @@ export const NewsService = {
       .populate("user"),
   byUserService: async (userId) =>
     News.find({ user: userId }).sort({ _id: -1 }).populate("user"),
+  updateService: async (id, title, text, banner) =>
+    News.findOneAndUpdate(
+      { _id: id },
+      { title, text, banner },
+      { rawResult: true }
+    ),
 };
