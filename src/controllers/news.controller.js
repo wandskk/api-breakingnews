@@ -6,7 +6,7 @@ const newsController = {
       const { title, text, banner } = req.body;
 
       if (!title || !text || !banner)
-        res.status(400).send({ message: "All fields are required" });
+        return res.status(400).send({ message: "All fields are required" });
 
       await NewsService.createService({
         title,
@@ -15,7 +15,7 @@ const newsController = {
         user: req.userId,
       });
 
-      res.status(201);
+      return res.status(201);
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -44,7 +44,7 @@ const newsController = {
       if (news.length === 0)
         return res.status(400).send({ message: "There are no news" });
 
-      res.send({
+      return res.send({
         nextUrl,
         previewsUrl,
         limit,
@@ -76,7 +76,7 @@ const newsController = {
         return res.status(400).send({ message: "There are no news" });
       }
 
-      res.send({
+      return res.send({
         news: {
           id: news._id,
           title: news.title,
@@ -99,9 +99,8 @@ const newsController = {
     try {
       const { id } = req.params;
       const news = await NewsService.findByIdService(id);
-      console.log(news);
 
-      res.send({
+      return res.send({
         news: {
           id: news._id,
           title: news.title,
@@ -117,6 +116,60 @@ const newsController = {
         },
       });
     } catch (error) {}
+  },
+  searchByTitle: async (req, res) => {
+    try {
+      const { title } = req.query;
+      const news = await NewsService.searchByTitleService(title);
+
+      if (news.length === 0) {
+        return res
+          .status(400)
+          .send({ message: "There are no news with this title" });
+      }
+
+      return res.send({
+        results: news.map((item) => ({
+          id: item._id,
+          title: item.title,
+          text: item.text,
+          banner: item.banner,
+          likes: item.likes,
+          comments: item.comments,
+          user: {
+            name: item.user.name,
+            username: item.user.username,
+            avatar: item.user.avatar,
+          },
+        })),
+      });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+  byUser: async (req, res) => {
+    try {
+      const id = req.userId;
+      const news = await NewsService.byUserService(id);      
+
+      return res.send({
+        results: news.map((item) => ({
+          id: item._id,
+          title: item.title,
+          text: item.text,
+          banner: item.banner,
+          likes: item.likes,
+          comments: item.comments,
+          user: {
+            name: item.user.name,
+            username: item.user.username,
+            avatar: item.user.avatar,
+          },
+        })),
+      });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
   },
 };
 

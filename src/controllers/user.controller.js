@@ -15,7 +15,7 @@ const userController = {
         return res.status(400).send({ message: "Error creating user" });
       }
 
-      res.status(201).send({
+      return res.status(201).send({
         message: "User created successfully",
         user: {
           id: user._id,
@@ -40,7 +40,7 @@ const userController = {
           .send({ message: "There are no registered users" });
       }
 
-      res.status(200).send({ users });
+      return res.status(200).send({ users });
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -48,7 +48,7 @@ const userController = {
   findById: async (req, res) => {
     try {
       const user = req.user;
-      res.status(200).send({ user });
+      return res.status(200).send({ user });
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -74,7 +74,7 @@ const userController = {
         background
       );
 
-      res.send({ message: "User updated successfully" });
+      return res.send({ message: "User updated successfully" });
     } catch (error) {
       res.status(500).send({ message: error.message });
     }

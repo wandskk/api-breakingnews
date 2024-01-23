@@ -7,4 +7,12 @@ export const NewsService = {
   countNewsService: async () => News.find().countDocuments(),
   topNewsService: async () => News.findOne().sort({ _id: -1 }).populate("user"),
   findByIdService: async (id) => News.findById(id).populate("user"),
+  searchByTitleService: async (title) =>
+    News.find({
+      title: { $regex: `${title || ""}`, $options: "i" },
+    })
+      .sort({ _id: -1 })
+      .populate("user"),
+  byUserService: async (userId) =>
+    News.find({ user: userId }).sort({ _id: -1 }).populate("user"),
 };
